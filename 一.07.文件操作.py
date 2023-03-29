@@ -45,8 +45,6 @@
 
 
 
-
-
 ### 2.文件的读取
 ## (1)open()打开文件
 ## (2)读操作相关方法 - read()/readline()/readlines()
@@ -93,7 +91,7 @@
 # 【a 追加】：打开一个文件用于追加。若文件已存在，将新内容追加到原本内容之后；若文件不存在，则创建新文件进行写入。
 
 
-# f = open('D:\Python\python项目\python_learn\文本.txt','r',encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt','r',encoding='UTF-8')
 # print(type(f))  # <class '_io.TextIOWrapper'> 表示对文本进行io操作的类
 
 
@@ -121,7 +119,7 @@
 #   （即读取文件时，光标会延续上次操作的位置）
 
 
-# f = open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8')
 # print(f.read(10))  # 读取了10个字符(转义字符算一个字符)
 # # 打印：1234567890
 # print(f.read())  # 接着上一次的位置，把剩下的读取完了
@@ -136,7 +134,7 @@
 # 语法：文件对象.readline()
 # 功能：读取并返回光标所在位置后的一行内容
 
-# f = open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8')
 # f.read(5) # 先把光标移动到第六个字节
 # print(f.readline())  #读取并返回光标所在位置后的一行内容
 # # 打印：67890
@@ -152,7 +150,7 @@
 # 功能：将光标位置后的文本内容封装到列表中，每行为一个元素，并返回列表
 
 
-# f = open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8')
 # print(f.readlines())  # 以列表的形式返回了每行的内容
 # # 打印：['1234567890\n', '114514\n', '1919810']
 
@@ -166,7 +164,7 @@
 
 # 对文件对象for循环，每次循环中，【循环变量为文件的一行数据】
 
-# f = open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8')
 # for x in f:
 #     print(x)
 # # 每次打印一行元素
@@ -187,7 +185,7 @@
 # 如果不调用close，同时程序没有停止运行，那么这个文件将一直被Python占用
 
 
-# f = open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8')
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8')
 # f.close()
 
 
@@ -203,7 +201,7 @@
 # 可以在操作完成后自动关闭文件，避免遗忘close方法
 
 
-# with open('D:\Python\python项目\python_learn\文本.txt', 'r', encoding='UTF-8') as f:
+# with open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'r', encoding='UTF-8') as f:
 #     print(f.readlines())
 #     f.close()
 # # 上面代码出代码块自动关闭文件，可以不写close
@@ -227,6 +225,29 @@
 
 
 
+# 课后练习：统计文本中的单词 app 出现的次数
+# 文本路径：'D:\Python\python项目\python_learn\测试文档\单词计数.txt'
+
+
+# # 方式一：一行行读取文件
+# f = open('D:\Python\python项目\python_learn\测试文档\单词计数.txt', 'r', encoding='UTF-8')
+# num = 0
+# for row in f:
+#     new_row = row.strip()  # 用strip去除首尾的空格和换行符
+#     my_list = new_row.split(' ')  # 用split将字符串以空格为分隔符，分割为列表
+#     num += my_list.count('app')
+# print(f'单词app出现次数为{num}')  # 9
+# f.close()
+
+
+# # 方式二：直接读取全部
+# f = open('D:\Python\python项目\python_learn\测试文档\单词计数.txt', 'r', encoding='UTF-8')
+# my_str = f.read()
+# num = my_str.count('app')
+# print(my_str)
+# print(f'单词app出现次数为{num}')  # 9
+# f.close()
+
 
 
 
@@ -241,5 +262,145 @@
 
 
 ### 3.文件的写入
+
+# 文件写入的一般流程如下：
+
+# # ① 打开文件 --（'w'只写模式：文件存在则清空内容重新写入，不存在则创建新文件）
+# f = open('python.txt', 'w')
+#
+# # ② 文件写入 --（写入缓冲区）
+# f.write('hello world')
+#
+# # ③ 内容刷新 --（将缓冲区内容写入硬盘）
+# f.flush()
+#
+# # ④ 关闭文件
+# f.close()
+
+# 注意：
+#   直接调用write，内容并未真正写入文件，而是会积攒在程序的内存中，称之为缓冲区。
+#   当调用flush时，内容会真正写入文件。
+#   这样做是避免频繁的操作硬盘，导致效率下降。（先攒到缓冲区，统一写入硬盘）
+#   close方法内置了flush功能，关闭文件也会自动写入
+
+
+
+# f = open('D:\Python\python项目\python_learn\测试文档\文本1.txt', 'w', encoding='UTF-8')
+# f.write('hello world\n114514\n1919810\n2333333')
+# f.flush()
+# f.close()
+
+
+
+
+
+
+
+
+
+
+
+
 ### 4.文件的追加
+
+# 文件追加的一般流程如下：（'a'与'w'流程相似）
+
+# # ① 打开文件 --（'a'追加模式：在源文件末追加内容，不存在则创建新文件）
+# f = open('python.txt', 'a')
+#
+# # ② 文件写入
+# f.write('hello world')
+#
+# # ③ 内容刷新
+# f.flush()
+
+
+
+# f = open('D:\Python\python项目\python_learn\测试文档\文本.txt', 'a', encoding='UTF-8')
+# f.write('ohhhhhh\n')
+# f.write('2333333\n')
+# f.flush()
+# f.close()
+# # 上面这段程序：运行一次追加一次
+
+
+
+
+
+
+
+
+
+
+
+
 ### 5.文件操作综合案例
+
+# 需求：有一份账单文件，记录了消费收入的具体记录，内容如下：
+
+# name,date,money,type,remarks
+# 小明,2022-01-1,100000,消费,正式
+# 小夫,2022-01-2,200000,收入,测试
+# 小明,2022-01-12,300000,消费,正式
+# 小夫,2022-01-13,100000,消费,正式
+# 小明,2022-02-10,200000,收入,测试
+# 小夫,2022-02-12,300000,消费,正式
+# 小明,2022-02-12,300000,收入,正式
+# 小红,2022-03-15,200000,消费,正式
+# 小明,2022-03-16,100000,收入,测试
+# 小红,2022-03-17,100000,消费,测试
+# 小明,2022-03-22,200000,消费,正式
+# 小明,2022-04-1,100000,收入,正式
+# 小夫,2022-04-2,300000,消费,测试
+# 小明,2022-04-24,100000,收入,正式
+# 小红,2022-04-26,200000,消费,测试
+# 小明,2022-05-12,100000,收入,正式
+# 小夫,2022-05-13,100000,消费,测试
+
+# 上面账单代码路径为 'D:\Python\python项目\python_learn\测试文档\账单.txt'
+# 完成以下步骤：
+# 读取文件
+# 将文件写出到'D:\Python\python项目\python_learn\测试文档\账单1(可删).txt'作为备份
+# 同时，将文件内标记为测试的文件进行丢弃
+
+
+
+# f1 = open('D:\Python\python项目\python_learn\测试文档\账单.txt', 'r', encoding='UTF-8')
+# f2 = open('D:\Python\python项目\python_learn\测试文档\账单1.txt', 'w', encoding='UTF-8')
+# for row in f1:
+#     if row.count('测试'):
+#         continue
+#     f2.write(row)
+# f2.flush()
+# f1.close()
+# f2.close()
+
+
+# 存入文档的结果为
+# name,date,money,type,remarks
+# 小明,2022-01-1,100000,消费,正式
+# 小明,2022-01-12,300000,消费,正式
+# 小夫,2022-01-13,100000,消费,正式
+# 小夫,2022-02-12,300000,消费,正式
+# 小明,2022-02-12,300000,收入,正式
+# 小红,2022-03-15,200000,消费,正式
+# 小明,2022-03-22,200000,消费,正式
+# 小明,2022-04-1,100000,收入,正式
+# 小明,2022-04-24,100000,收入,正式
+# 小明,2022-05-12,100000,收入,正式
+
+
+
+
+
+# # 下面这种方法更合理
+#
+# f1 = open('D:\Python\python项目\python_learn\测试文档\账单.txt', 'r', encoding='UTF-8')
+# f2 = open('D:\Python\python项目\python_learn\测试文档\账单1.txt', 'w', encoding='UTF-8')
+# for row in f1:
+#     if row.strip().split(',')[4] == '测试':  # 先删除首尾回车/空格，之后以','为分隔符存入数组，然后判断下标为4的remarks是否为测试
+#         continue
+#     f2.write(row)  # 上面全部操作都不改变原字符串row的值
+# f1.close()
+# f2.close()
+
