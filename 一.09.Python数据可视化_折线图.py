@@ -351,4 +351,4 @@
 # )
 #
 # # 生成图表
-# line.render()
+# line.render("美日印确诊人数折线图.html") # render中可以填写生成的html文件名称
