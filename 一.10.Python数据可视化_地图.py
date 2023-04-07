@@ -162,3 +162,46 @@
 
 
 ### 3.疫情地图-省级疫情地图
+
+
+# # 导包
+# import json
+# from pyecharts.charts import Map
+# from pyecharts.options import  TitleOpts, VisualMapOpts
+#
+# # 文件读取
+# f = open("D:\Python\python项目\python_learn\测试文档\地图数据\疫情.txt", "r", encoding='UTF-8')
+# date = f.read()
+# f.close()
+#
+# # 文件处理
+# date = json.loads(date)
+# shanxi_data = date['areaTree'][0]['children'][21]['children']
+#
+# # 获取城市列表
+# city_list = []
+# for city_data in shanxi_data:
+#     city_list.append((city_data['name']+"市", city_data['total']['confirm']))
+#
+# # 构建地图
+# shanxi_map = Map()
+#
+# # 添加数据
+# shanxi_map.add('山西省疫情分别', city_list, "山西")
+#
+# # 设置全局选项
+# shanxi_map.set_global_opts(
+#     title_opts=TitleOpts(title="山西省疫情地图"),
+#     visualmap_opts=VisualMapOpts(
+#         is_show=True,
+#         is_piecewise=True,
+#         pieces=[
+#             {"min":1, "max":99, "label":"1~99人", "color":"#c9da67"},
+#             {"min":100, "max":999, "label":"100~999人", "color":"#d8b94b"},
+#             {"min":1000, "label":"1000人以上", "color":"#d8904b"},
+#         ]
+#     )
+# )
+#
+# # 绘图
+# shanxi_map.render("山西省疫情地图.html")
