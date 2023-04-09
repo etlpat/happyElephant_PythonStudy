@@ -187,23 +187,76 @@
 
 
 
-# 导包
+# # 导包
+# from pyecharts.charts import Bar,Timeline
+# from pyecharts.options import LabelOpts,TitleOpts
+# from pyecharts.globals import ThemeType
+#
+# ## （1）数据处理
+# # 读取数据
+# f = open('D:\Python\python项目\python_learn\测试文档\动态柱状图数据\历年全球GDP数据.csv', 'r', encoding='GB2312') # 这里使用文件自身的编码格式，就不用UTF-8了
+# data_lines = f.readlines()
+# f.close()
+#
+# # 我们最终要获得一个字典，格式:{ 年份:[[国家,GDP], [国家,GDP],...], 年份:[[国家,GDP], [国家,GDP],...],... }
+# data_lines.pop(0)  # 删除第一条无关内容
+# data_dict = dict()
+# for element in data_lines:  # 用该循环为字典添加元素
+#     element = element.strip().split(',')
+#     year = int(element[0])
+#     country = element[1]
+#     GDP = float(element[2])  # 由于数据带有科学计数法，如‘5.433E+11’，必须转化为float型，不能是int
+#     ## 方法①：if else 添加元素
+#     if year in data_dict:
+#         data_dict[year].append([country, GDP])
+#     else:
+#         data_dict[year] = [[country, GDP]]
+#     # ## 方法②：try expect 添加元素
+#     # try:
+#     #     data_dict[year].append([country, GDP])
+#     # except KeyError:
+#     #     data_dict[year] = [[country, GDP]]
+#
+#
+# ## （2）图表绘制
+# # 排序年份（由于字典无序，所以要排序年份进行操作）
+# year_list = sorted(list(data_dict.keys()))  # 注意：字典.keys() 返回值类型为 <class 'dict_keys'>
+#
+# # 创建时间线对象
+# timeline = Timeline({"theme":ThemeType.LIGHT})
+#
+# # for循环每一年的数据，基于每一年数据，创建对应的bar对象
+# # 在for中，将每一年的bar对象添加到时间线中
+# for year in year_list:
+#     # 对GDP进行由高到低排序
+#     data_dict[year].sort(key=lambda x:x[1], reverse=True)
+#     # 获取xy轴坐标的数据
+#     x_data = []
+#     y_data = []
+#     for num in range(0,8):
+#         x_data.append(data_dict[year][num][0])  # x轴添加国家
+#         y_data.append(data_dict[year][num][1] / 10**8)  # y轴添加GDP(单位：亿)
+#     # 构建柱状图
+#     bar = Bar()
+#     bar.add_xaxis(x_data[::-1])  # 由于GDP高的在上，所以要反转数据
+#     bar.add_yaxis('GDP(亿)', y_data[::-1], label_opts=LabelOpts(position="right"))
+#     bar.reversal_axis()     # 反转xy轴
+#     bar.set_global_opts(    # 设置标题
+#         title_opts=TitleOpts(title=f'{year}年全球前八GDP数据',pos_left='1%',pos_bottom='90%')
+#     )
+#     # 将柱状图添加到时间线中
+#     timeline.add(bar, str(year))
+#
+#
+# # 对时间线设置自动播放
+# timeline.add_schema(
+#     is_auto_play=True,      # 是否自动播放
+#     play_interval=700,      # 自动播放的时间间隔 (单位：毫秒)
+#     is_timeline_show=True,  # 是否在自动播放时，显示时间轴
+#     is_loop_play=False      # 是否循环自动播放
+# )
+#
+# # 绘制时间轴
+# timeline.render('全球1960-2019年GDP前8国家动态柱状图.html')
 
-# 读取数据
-f = open('D:\Python\python项目\python_learn\测试文档\动态柱状图数据\历年全球GDP数据.csv', 'r', encoding='GB2312') # 这里使用文件自身的编码格式，就不用UTF-8了
-data_lines = f.readlines()
-f.close()
 
-# 数据处理
-data_lines.pop(0)  # 删除第一条无关内容
-data_list = []
-for x in range(1960,2010):
-    data_list.append({x:[]})
-print(data_list)
-for element in data_lines:
-    element = element.split(',')
-    #print(element)
-    print(int(int(element[0])-1960))
-    #print(data_list[int(element[0])-1960])
-    #data_list[int(element[0])-1960][x].append([element[1], element[2].strip()])
-print(data_list)
