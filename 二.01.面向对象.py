@@ -876,6 +876,21 @@ import random
 
 ## (4)Union类型
 
+# Union类型也叫联合类型，是typing模块中的一种类型，使用时需要导入
+# Union[type1, type2]，表示为type1、type2的联合类型，即两种类型都有
+
+
+# from typing import Union
+#
+# my_list : list[Union[str, int]] = [1, 2, '3', '4']  # Union[str, int]表示类型中含有str或int
+# my_dest : dict[str, Union[str, int]] = {'name':'张三', 'age':12}  # dict[str, Union[str, int]]表示字典类型中键是str，值是str\int的联合类型
+#
+# def func(data : Union[int, str]) -> Union[int, str]: # 表示参数和返回值都是联合类型，int或str型
+#     pass
+
+
+
+
 
 
 
@@ -888,7 +903,263 @@ import random
 
 
 ### 9.多态
+
+## (1)多态
+## (2)抽象类、抽象方法
+
+
+
+## (1)多态
+#
+# 【多态】：即多种形态，当完成某个行为时，使不同的对象得到不同的状态。
+# 放到代码中理解：【同样的行为(函数)，传入不同的对象，得到不同的状态】。
+
+# 多态常作用在【继承关系】上。
+# 比如：函数(方法)形参声明接收父类对象，实际传入子类对象进行工作，从而获得不同的工作状态。(python语法上允许这种操作)
+#     由于子类继承父类，所以不管子类有没有复写，必然存在该方法。
+#     不同子类执行复写得到同名方法，就能实现【同样的行为，不同对象，获得不同状态】即【多态】
+# 即：
+#   以父类做定义声明
+#   以子类做实际工作
+#   用以获得同一种行为，不同状态
+
+
+# # 多态 - 示例代码：
+#
+# class Animal:
+#     def speak(self):
+#         pass
+#
+# class Cat(Animal):
+#     def speak(self):
+#         print('喵喵喵')
+#
+# class Dog(Animal):
+#     def speak(self):
+#         print('汪汪汪')
+#
+# def make_noise(animal : Animal):  # 参数注解为Animal对象
+#     animal.speak()
+#
+# cat = Cat()
+# dog = Dog()
+# make_noise(cat)  # 喵喵喵
+# make_noise(dog)  # 汪汪汪
+#
+# # make_noise函数注解要求传入Animal类型，但是我们也可以传入其子类 (子类必然含有与父类同名的方法)
+# # 不同子类由于对同名方法的复写不同，执行结果也不同，实现了多态
+
+
+
+## (2)抽象类、抽象方法
+#
+# 抽象类(接口)
+# 上面的示例代码，我们可以观察到父类speak方法的函数体是pass
+#
+# 这种设计的意义是：
+#   ·父类用来确定有哪些方法
+#   ·具体的方法实现，由子类来决定
+#
+# 这种写法，就叫做【抽象类】(也可以称之为接口)
+# ·抽象类：含有抽象方法的类称之为抽象类
+# ·抽象方法：方法体是空实现的(pass)称之为抽象方法
+
+
+# # 抽象类 - 示例代码：
+#
+# class AC:  # 空调类 -- 在该类中完成了对子类功能的规范
+#     def cood_wind(self):
+#         """制冷"""
+#         pass
+#
+#     def hot_wind(self):
+#         """制热"""
+#         pass
+#
+#     def swing_l_r(self):
+#         """左右摆风"""
+#         pass
+#
+# class FactoryOneAC(AC):
+#     def cood_wind(self):
+#         print('第一家厂制冷功能')
+#     def hot_wind(self):
+#         print('第一家厂制热功能')
+#     def swing_l_r(self):
+#         print('第一家厂左右摆风功能')
+#
+# class FactoryTwoAC(AC):
+#     def cood_wind(self):
+#         print('第二家厂制冷功能')
+#     def hot_wind(self):
+#         print('第二家厂制热功能')
+#     def swing_l_r(self):
+#         print('第二家厂左右摆风功能')
+#
+# # 下面三个函数时间多态
+# def make_cood(ac : AC):
+#     ac.cood_wind()
+# def make_hot(ac : AC):
+#     ac.cood_wind()
+# def make_swing(ac : AC):
+#     ac.cood_wind()
+#
+#
+# ac1 = FactoryOneAC()
+# ac2 = FactoryTwoAC()
+# make_cood(ac1)  # 第一家厂制冷功能
+# make_cood(ac2)  # 第二家厂制冷功能
+#
+# # 利用pass抽象方法，可以完成顶层父类的标设计，不同子类在复写中实现多态
+# 抽象类好比一个标准，指定了一些抽象方法，需要用子类去具体实现
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 10.综合案例
+
+# 某公司，有两份数据文件，现需要对其进行分析处理，计算每日的销售额并以柱状图表的形式进行展示。
+# 两公司数据如下：
+# 一月份数据是普通文件，使用逗号分割数据，从前到后分别是(日期，订单id，销售额，销售省份)，路径如下：'D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\2011年1月销售数据.txt'
+# 二月份数据是JSON数据，同样包含(日期，订单id，销售额，销售省份)，路径如下：'D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\2011年2月销售数据JSON.txt'
+#
+# 步骤： 读取数据 -> 封装数据对象 -> 计算数据对象 -> pyecharts绘图
+# 要求：全程要求使用面向对象思想来进行任务的开发
+# 步骤变更：读取数据(设计FileReader类) -> 封装数据对象(设计数据封装类) -> 计算数据对象(对对象进行逻辑计算) -> pyecharts绘图(以面向对象思想，重新认识pyecharts)
+
+# # 具体步骤如下：
+# 1.设计一个类，完成数据的封装
+# 2.设计一个抽象类，定义文件读取的相关功能，并使用子类实现具体功能
+# 3.读取文件，生产数据对象
+# 4.进行数据需求的逻辑计算(计算每一天的销量)
+# 5.通过pyecharts进行图形描绘
+
+
+
+
+# # # 0.导包
+# from pyecharts.charts import Bar
+# from pyecharts.options import TitleOpts,LabelOpts,InitOpts
+# from pyecharts.globals import ThemeType
+#
+#
+# # # 1.设计一个类，完成数据的封装
+#
+# class Record:  # 记录所需内容的类
+#
+#     def __init__(self, date, order_id, money, province):  # 构造方法
+#         self.date = date             # 日期
+#         self.order_id = order_id     # 订单id
+#         self.money = money           # 销售额
+#         self.province = province     # 省份
+#
+#     def __str__(self):
+#         return f'{self.date}, {self.order_id}, {self.order_id}, {self.province}'
+#
+#
+#
+# # # 2.设计一个抽象类，定义文件读取的相关功能，并使用子类实现具体功能
+#
+# class FileReader:  # 文件读取器的(抽象)类
+#
+#     def __init__(self, data_name):
+#         self.data_name = data_name
+#
+#     def read_data(self) -> list[Record]:
+#         """读取文件，将读到的每一条数据都转化为Record对象，将它们都封装到列表中返回"""
+#         pass
+#
+#
+#
+# class TextFileReader(FileReader):  # 读取普通文件的类
+#
+#     def read_data(self) -> list[Record]:
+#         f = open(self.data_name, 'r', encoding='UTF-8')
+#         record_list : list[Record] = []
+#         for line in f.readlines():
+#             line_list = line.strip().split(',')
+#             record = Record(line_list[0],line_list[1],int(line_list[2]),line_list[3])
+#             record_list.append(record)
+#         f.close()
+#         return record_list
+#
+#
+#
+# class JsonFileReader(FileReader):  # 读取json文件的类
+#
+#     def read_data(self) -> list[Record]:
+#         import json
+#         f = open(self.data_name, 'r', encoding='UTF-8')
+#         record_list : list[Record] = []
+#         for line in f.readlines():
+#             line_dict = json.loads(line)  # 整个json每行为一个字典，所以在循环内转换格式，根据文件灵活变通
+#             record = Record(line_dict['date'],line_dict['order_id'],int(line_dict['money']),line_dict['province'])
+#             record_list.append(record)
+#         f.close()
+#         return record_list
+#
+#
+#
+# # # 3.读取文件，生产数据对象
+#
+# # 创建文件读取器对象，以便获取相应数据
+# text_file_reader = TextFileReader('D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\\2011年1月销售数据.txt')
+# json_file_reader = JsonFileReader('D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\\2011年2月销售数据JSON.txt')
+#
+# # 获得一、二月数据对象的列表
+# jan_list : list[Record] = text_file_reader.read_data()
+# feb_list : list[Record] = json_file_reader.read_data()
+#
+# # 获得两个月数据合并以后的列表
+# all_list : list[Record] = jan_list + feb_list
+#
+#
+#
+# # # 4.进行数据需求的逻辑计算(计算每一天的销量)
+#
+# # 将每天的（日期:销售额）存入字典中
+# data_dict = {}
+# for record in all_list:
+#     try:  # if else也行
+#         data_dict[record.date] += record.money
+#     except KeyError:
+#         data_dict[record.date] = record.money
+#
+# # 将字典键按日期排序，存入列表
+# date_list = list(data_dict.keys())
+# date_list = [date.split('-') for date in date_list]
+# date_list.sort(key=lambda element:int(element[0]+element[1]+element[2]))
+# date_list = [element[0]+'-'+element[1]+'-'+element[2] for element in date_list]
+#
+#
+#
+# # # 5.通过pyecharts进行图形描绘
+#
+# # 获取y轴数据
+# money_list = []
+# for date in date_list:
+#     money_list.append(data_dict[date])
+# 
+# # 绘图
+# bar = Bar(init_opts=InitOpts(theme=ThemeType.LIGHT))
+# bar.add_xaxis(date_list)  # 添加x轴数据
+# bar.add_yaxis('销售额', money_list, label_opts=LabelOpts(is_show=False))  # 添加y轴数据，修改y轴标签
+# bar.set_global_opts(
+#     title_opts=TitleOpts(title='每日销售额')
+# )
+# bar.render('每日销售额柱状图.html')
+
 
 
 
