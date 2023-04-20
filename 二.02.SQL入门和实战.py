@@ -238,7 +238,8 @@
 # # (1)insert 数据插入
 # 语法：insert into 表[(列1,列2,...,列N)] values(值1,值2,...值N)[,(值1,值2,...值N),......,(值1,值2,...值N)];
 #   注意：上面方括号[]代表可选内容
-# 前面给出想要插入数据的列，后面以行为单位，给出每一行中各列对应的值。
+# 语法解析：前面给出想要插入数据的列，后面以行为单位，给出每一行中各列对应的值。
+# 功能：将(values)数据(insert into)插入指定的列中
 # 补充：表名后面不指定列，默认按顺序插入全部列
 
 
@@ -328,7 +329,16 @@
 
 ## (1)select 基础数据查询
 ## (2)group by 分组聚合
-## (3)older by / limit 排序分页
+## (3)older by / limit  排序/分页
+
+# # 综合语法如下：（从上到下有序）
+# select 列/聚合函数/* from 表
+# where 条件判断
+# group by 列
+# order by 列 [asc/desc]
+# limit n[,m];
+#
+# 即：select 列/聚合函数/* from 表 [where 条件判断] [group by 列] [order by 列 [asc/desc]] [limit n[,m]];
 
 
 # DQL--数据查寻语言，英文全称是Data Query Language
@@ -360,8 +370,103 @@
 
 
 
+
+
+
 ## (2)group by 分组聚合
-## (3)older by / limit 排序分页
+
+# 分组聚合应用场景非常多，如：统计班级中男生和女生人数。
+# select sex,count(name) from student group by sex;
+# 这种需求就需要：
+#   ·按性别分组
+#   ·统计每个组人数
+# 这就称之为：分组聚合
+
+
+# 【语法】：（前面和基础数据查询一样，后面多了group by）
+# select 字段/聚合函数 from 表 [where 条件判断] group by 列;
+# 聚合函数： sum(列)  求和
+#          avg(列)   求平均值
+#          min(列)   求最小值
+#          max(列)   求最大值
+#          count(列/*)   求数量 （一组中成员数量一定，无论写哪列，或者*，结果都是组中人的数量）
+#
+# 功能：对列中符合where条件的列元素进行【分组】(group by)，将各组元素通过聚合函数进行【聚合】
+# 如 select sex,avg(age) from student group by sex;  # 以学生性别为分组，显示各分组的性别和平均年龄
+#
+# 注意：【group by中出现了哪个列，哪个列才能出现在selest的字段中】
+#       若以sex分组，那么字段中只能出现sex，而聚合函数则没有限制。
+#       （除了sex的字段有多个，但一个分组结果只出一行，没法选择其他字段，但可以使用聚合函数）
+
+
+# # 示例：
+# # 对相同年龄的学生进行分组，显示每组年龄已经id的最大最小值
+# select age,max(id),min(id) from student group by age;
+#
+# # 对年龄小于18的学生以性别进行分组，显示各组的性别和年龄的平均值
+# select sex,avg(age) from student where age < 18 group by sex;
+#
+# # 对id>100的学生以id进行分组，显示各组的id、年龄的平均、最大、最小值
+# select id,avg(age),max(age),min(age) from student where id > 100 group by id;
+#
+# # 对年龄>20的学生以年龄进行分组，输出各组的年龄、人数，以年龄升序输出。
+# select age,count(name) from  student
+# where age > 20
+# group by age
+# order by age;
+
+
+
+
+
+
+## (3)older by / limit  排序/分页
+
+## order by 排序
+# 可以对查询的结果，使用older by关键字，指定某个列进行排序。
+# 可以对以上学的内容进行order by排序（基础查询和分组聚合都可以）
+#
+# 语法如下：
+# select 列/聚合函数/* from 表
+# where 条件判断
+# group by 列
+# order by 列 [asc/desc];  （asc升序，desc降序，默认升序）
+# # SQL语言支持写多行，遇;结束。相当于写到一行
+
+
+# # 示例：
+# # 按年龄对学生进行升序排序
+# select * from student order by age;
+#
+# # 按id对年龄>30岁的学生进行降序排序
+# select * from student where age > 30 order by id desc;
+
+
+
+
+## limit 分页
+# 同样，可以使用limit关键字，对查询结果进行数量限制或分页排序
+# 即在上面语法的后面，直接加一个 limit n[,m]
+# 若 limit n     表示从头向下输出n行（默认条0行）
+# 若 limit m,n   表示跳过m行，从m+1行开始，向下输出n行
+
+# 语法：
+# select 列/聚合函数/* from 表
+# where 条件判断
+# group by 列
+# order by 列 [asc/desc]
+# limit n[,m];
+
+
+# # 示例：
+# # 输出student表中的5条结果
+# select * from student limit 5;
+#
+# # 输出student表中按id降序排序的前5条结果
+# select * from student order by id desc limit 5;
+#
+# # 输出student表中按年龄升序排序的第3-6行结果（跳过两行，数4行）
+# select * from student order by age limit 2,4;
 
 
 
@@ -378,18 +483,183 @@
 
 
 ### 6.Python & MySQL
+
+# 除了使用图形化工具以外，我们也可以使用编程语言来执行SQL从而操作数据库。
+# 在Python中，使用第三方库：pymysql来完成对MySQL数据库的操作。
+
+
+# 在Python中操作MySQL，需要先创建链接对象，在最后关闭链接对象
+# 创建链接对象后，就可以执行操纵数据库的sql语句
+#   首先要获得游标对象，其次选择指定的数据库，即可用 游标对象.execute()执行sql语句
+#   执行完sql语句后，若想更新数据同步到数据库，需要 链接对象.conmmit() 确认更新
+#                 若想查看打印信息，需要 游标对象.fetchall() 接收返回信息
+# 具体步骤如下：
+
+
+
+# # # (1)导包
+# from pymysql import Connection
+#
+#
+# # # (2)获取MySQL数据库的链接对象（构建链接）
+# conn = Connection(
+#     host = 'localhost',         # 主机名，ip地址是127.000.000.001
+#     port = 3306,                # MySQL数据库端口，默认是3306
+#     user = 'root',              # 用户名
+#     password = '123321WSSZW'    # 密码
+#     # autocommit = True         # 可设置自动提交，更改数据是不用conmmit确认
+# )
+#
+#
+# # # (3)打印MySQL基础信息
+# # print(conn.get_server_info())  # 8.0.32 （这是我们的MySQL版本，打印该信息表示链接成功）
+#
+#
+#
+# # # (4)执行【非查询数据、更改数据的SQL】
+# # ①获取游标对象
+# cursor = conn.cursor()
+# # ②选择数据库，相当于sql语言的【use 库名;】
+# conn.select_db('py_test')
+# # ③执行sql语句
+# cursor.execute('create table student(id int, name varchar(15), age int, sex varchar(5));')  # 创建student表
+#
+#
+#
+# # # (5)执行【更改数据的SQL】
+# # ①获取游标对象
+# cursor = conn.cursor()
+# # ②选择数据库，相当于sql语言的【use 库名;】
+# conn.select_db('py_test')
+# # ③执行sql语句
+# cursor.execute('insert into student(name,id,sex,age) values("张三",1001,"男",18);')  # 为表中添加数据
+# # ④通过commit确认更改信息
+# conn.commit()
+#
+#
+#
+# # # (6)执行【查询数据的SQL】
+# # ①获取游标对象
+# cursor = conn.cursor()
+# # ②选择数据库
+# conn.select_db('py_test')
+# # ③执行sql语句
+# cursor.execute('select * from student;')  # 查看表中数据
+# # ④返回执行结果
+# results = cursor.fetchall()  # 返回执行结果到一个元组中去
+# print(results)
+#
+#
+#
+# # # (7)关闭链接
+# conn.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 7.综合案例
 
+# 将下面两个文件的内容写入数据库中：
+# 一月份数据是普通文件，使用逗号分割数据，从前到后分别是(日期，订单id，销售额，销售省份)，路径如下：'D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\2011年1月销售数据.txt'
+# 二月份数据是JSON数据，同样包含(日期，订单id，销售额，销售省份)，路径如下：'D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\2011年2月销售数据JSON.txt'
+# 本次需求我们创建按一个数据库来使用，数据库名称：py_sql
+#
+# 在MySQL中创建好py_sql数据库，剩下步骤要求用Python代码来将数据存入表中。
+# 基于数据结构，构建一个orders表来存储数据，以下是建表语句：
+# create table orders(
+#   order_date date,
+#   order_id varchar(255),
+#   money int,
+#   province varchar(10)
+# );
 
 
 
+# (0)导包
+from pymysql import Connection
 
 
+# (1)构建数据对象
+class Data:
+    def __init__(self, data, id, money, province):
+        self.data = data
+        self.id = id
+        self.money = money
+        self.province = province
+
+class FileToList:
+    """该对象的功能是：初始输入文件名；可通过调用file_to_list方法，获得一个列表，列表成员是Data对象"""
+    def __init__(self,file_name):
+        self.file = file_name
+    def file_to_list(self):
+        pass
+
+class TxtFileToList(FileToList):
+    def file_to_list(self):
+        f = open(self.file, 'r', encoding='UTF-8')
+        txt_list = []
+        for line in f.readlines():
+            line_list = line.strip().split(',')
+            line_data = Data(line_list[0], line_list[1], int(line_list[2]), line_list[3])
+            txt_list.append(line_data)
+        f.close()
+        return txt_list
+
+class JsonFileToList(FileToList):
+    def file_to_list(self):
+        import json
+        f = open(self.file, 'r', encoding='UTF-8')
+        json_list = []
+        for line in f.readlines():
+            line_dict = json.loads(line)
+            line_data = Data(line_dict['date'],line_dict['order_id'],int(line_dict['money']),line_dict['province'])
+            json_list.append(line_data)
+        return json_list
 
 
+# (2)将两个月份的数据合并为1个list来储存
+txt_object = TxtFileToList('D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\\2011年1月销售数据.txt')
+json_object = JsonFileToList('D:\Python\python项目\python_learn\测试文档\某公司一二月份数据\\2011年2月销售数据JSON.txt')
+txt_list = txt_object.file_to_list()
+json_list = json_object.file_to_list()
+all_list = txt_list + json_list
 
 
+# (3)获得MySQL链接对象
+coon = Connection(
+    host = 'localhost',
+    port = 3306,
+    user = 'root',
+    password = '123321WSSZW'
+)
 
 
+# (4)执行sql语句
+coon.select_db('py_sql')  # 选择数据库
+cursor = coon.cursor()  # 创建游标对象
+# ① 创建orders表
+cursor.execute("create table orders(order_date varchar(20), order_id varchar(255), money int, province varchar(10));")
+# # ② 传入数据
+# for object in all_list:
+#     cursor.execute(f"insert into orders(order_date, order_id, money, province) values({object.data}, {object.id}, {object.money}, {object.province});")
+# # ③ 查看数据
+# cursor.execute("select * from orders")
+# results = cursor.fetchall()
+# print(results)
+# # ④ 确认上传数据
+# coon.commit()
 
 
+# (5)关闭链接
+coon.close()
