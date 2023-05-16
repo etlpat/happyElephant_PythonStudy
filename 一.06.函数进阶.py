@@ -301,6 +301,40 @@
 
 ### 4.内置函数补充
 
+"""
+(1)类型转换与判断
+① bin()、oct()、hex()
+② float()、complex()
+③ int()
+④ ord()、chr()
+⑤ list()、tuple()、str()、set()、dict()
+⑥ eval()
+⑦ type()、isinstance()
+
+(2)最值和求和
+① max()、min()
+② sum()
+
+(3)基本输入/输出
+① input()
+② print()
+
+(4)排序与逆序
+① sorted()
+② list.sort()
+③ reversed()
+
+(5)枚举与迭代
+① enumerate()
+
+(6) map()函数、reduce()函数、filter()函数
+
+(7) range()函数
+
+(8) zip()函数
+"""
+
+
 
 # # (1)类型转换与判断
 
@@ -339,7 +373,7 @@
 # print(chr(ord('a') + 1))  # 'b'
 
 
-# ⑤数据容器转换函数：list()、tuple()、str()、set、dict
+# ⑤数据容器转换函数：list()、tuple()、str()、set()、dict()
 # 具体内容我们在数据容器章节详细讲过，下面是一些简单的例子：
 #
 # print(str({1,2,3}))  # {1, 2, 3}，直接变成字符串
@@ -358,6 +392,7 @@
 # print(int('09'))    # 9，int允许以0开头的数字
 # print(list(str([1, 2, 3])))  # ['[', '1', ',', ' ', '2', ',', ' ', '3', ']']
 # print(eval(str([1, 2, 3])))  # [1, 2, 3]，字符串求值，还原对象
+# print(eval('(1,2,3)'))  # (1, 2, 3)
 # print(eval('sum(range(1,101))'))  # 5050，eval也可以计算字符串中包含的函数值
 
 
@@ -385,6 +420,11 @@
 # print(max({1:None, 2:None, 3:None}))  # 3 （对字典的键进行比较）
 # print(max(1, 2, 3, 4))       # 4
 # print(min('abc', 'ABC', 'abcd'))  # ABC
+#
+# 注：max()和min()还支持key参数，用来指定比较大小的依据，key必须是函数
+# list0 = list(map(lambda x: str(x), list(range(1, 11))))
+# print(list0)  # ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+# print(max(list0, key=len))  # 10
 
 
 # ②sum()计算数据容器等可迭代对象元素的和
@@ -421,7 +461,7 @@
 
 
 
-# # (3)排序与逆序
+# # (4)排序与逆序
 
 # ① sorted()函数
 # 功能：对数据容器等可迭代对象以key为依据进行排序，并【不改变数据容器的内容，返回新列表】。
@@ -447,7 +487,6 @@
 # print(dict(sorted(x2.items(), key=lambda x:x[0], reverse=True)))  # {'c': 1, 'b': 2, 'a': 3}
 
 
-
 # ②list.sort()方法
 # 语法：列表.sort(key=选择排序依据的函数, reverse=True|False)
 #      列表的sort方法，其使用方法与数据容器通用函数sorted()相似
@@ -466,4 +505,97 @@
 # print(x)  # [1, 2, 3]，不改变原本的值
 # print(x1)  # <list_reverseiterator object at 0x0000021877B1DAB0>，返回生成器对象
 # print(list(x1))  # [3, 2, 1]，将生成器对象转化为list即可得到反转后的内容
+
+
+
+
+# # (5)枚举与迭代
+
+# ①enumerate()枚举函数
+# enumerate 英文：v.枚举
+# 语法：enumerate(可迭代对象)  # 注：可迭代对象包含数据容器
+# 功能：返回一个枚举对象，其中每个元素都是(含引索, 值)的元组；使用时，即可以把enumerate对象转换为list、tuple、set，也可以直接使用for循环遍历其中元素
+#
+# object = enumerate([1, 2, 3, 4, 5])
+# print(object)  # <enumerate object at 0x0000023031620C20>
+# print(list(object))  # [(0, 1), (1, 2), (2, 3), (3, 4), (4, 5)]
+# for index, value in enumerate(('a', 'b', 'c')):
+#     print((index, value), end=' ')  # (0, 'a') (1, 'b') (2, 'c')
+
+
+
+
+# # (6) map()函数、reduce()函数、filter()函数
+# 注意：这些函数的参数均为(func, 可迭代对象)，map按函数映射，reduce按函数化简聚合，filter按函数过滤。
+#     上述函数均不改变原本可迭代对象的值，返回新的对象存放处理后的值
+# 上面的函数，可以类比与pyspark模块中，对rdd对象进行处理的函数：rdd.map(func)；rdd.reduceByKey(func)；rdd.filter(func)
+
+
+# ①map()函数
+# map 英文：v.映射
+# 语法：map(func, 可迭代对象)
+# 功能：将可迭代对象的元素(以func为依据)逐个处理，返回一个map对象。不改变原对待对象的值
+# map对象属于迭代器类型，其中每个元素是原本可迭代对象经过func处理后的结果，可将map对象转换为list、tuple、set，也可以直接使用for循环遍历其中元素
+#
+# data = ["qwe asd", "zxc rty"]
+# obj = map(lambda x: x.split(" "), data)
+# print(obj)  # <map object at 0x0000015D308CDAB0>，返回迭代器对象
+# print(list(obj))  # [['qwe', 'asd'], ['zxc', 'rty']]，可将map对象转化为list
+# print(tuple(map(lambda x: x*10, [1, 2, 3])))  # (10, 20, 30)
+
+
+# ②reduce()函数
+# reduce 英文：v.约简、化简到最小
+# 语法：reduce(func, 可迭代对象)
+# 功能：将可迭代对象的两个元素(以func为依据)从左带有依次处理，实现聚合的过程，返回聚合结果
+# 如：reduce(lambda x,y:x+y, [1,2,3,4,5])，计算过程为((((1+2)+3)+4)+5)
+# 注意：reduce是模块functools中的函数
+#
+# from functools import reduce
+# a = reduce(lambda x, y: x+y, [1, 2, 3, 4])
+# print(a)  # 10
+# print(reduce(lambda x, y: x*y, [2, 3, 4]))  # 24
+
+
+# ③filter()函数
+# filter 英文：v.过滤
+# 语法：filter(func, 可迭代对象)
+# 注意：func传入一个参数，返回bool值。 f:(T) -> bool
+# 功能：函数对可迭代对象(以func为依据)逐个过滤处理，得到True的保留至返回值的filter可迭代对象中
+#
+# num = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+# obj = filter(lambda x: x >= 5, num)  # 匿名函数返回x>=5，即x>=5值为True，否则为False
+# print(obj)  # 返回迭代器对象
+# print(list(obj))  # [5, 6, 7, 8, 9]，过滤大于等于5的数
+# print(list(filter(lambda x: not(x % 2), num)))  # [2, 4, 6, 8]，过滤偶数
+
+
+
+
+# # (7) range()函数
+# 语法：range([start,]stop[,step])  # 方括号表示可选
+# start默认为0，step默认为1，左闭右开
+# 注意：range本身也是一种可迭代对象，可以转换为数据容器或者用for循环迭代
+#
+# x = range(5)
+# print(x)  # range(0, 5)，x是可迭代对象
+# print(list(x))  # [0, 1, 2, 3, 4]
+# print(list(range(1, 10, 2)))  # [1, 3, 5, 7, 9]
+
+
+
+
+# # (8) zip()函数
+# 语法：zip(iterable1, iterable2, ..., iterableN)  # zip的参数表示可迭代对象
+# 功能：返回一个zip可迭代对象，zip对象的每个元素都是（参数中多个可迭代对象对应位置元素组成的元组）。
+# 注意：返回的zip对象的元素个数取决于:参数的可迭代对象中最短的那个
+#
+# x = zip([1,2,3,4,5], 'abc', ('q','w','e','r'))
+# print(x)  # <zip object at 0x0000020177AB7E00>，返回zip对象
+# print(list(x))  # [(1, 'a', 'q'), (2, 'b', 'w'), (3, 'c', 'e')]，将参数中数据容器对应位置的元素组合到元组中，zip对象元素个数==参数最短的数据容器参数个数
+# print(tuple(zip('123', 'abc', 'qwe')))  # (('1', 'a', 'q'), ('2', 'b', 'w'), ('3', 'c', 'e'))
+# # 可以利用zip创建字典
+# print(dict(zip(range(1,4), ['a', 'b', 'c'])))  # {1: 'a', 2: 'b', 3: 'c'}
+
+
 
