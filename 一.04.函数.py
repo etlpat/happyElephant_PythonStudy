@@ -283,6 +283,9 @@
 
 ## 8.综合案例
 
+
+
+# # 案例(1)
 #ATM程序
 # 定义一个全局变量:money,用来记录银行卡余额(默认5000000)
 # 定义一个全局变量:name,用来记录客户姓名(启动程序时输入)
@@ -352,6 +355,42 @@
 #         print("暂无此业务，请重新输入")
 #     input()
 # print("程序已退出")
+
+
+
+# # 案例(2)
+# 用函数计算并输出斐波那契数列中小于参数n的所有值，并调用该函数进行测试
+#
+# def fbnq(n):
+#     a, b = 1, 1
+#     while a < n:
+#         print(a, end=' ')
+#         a, b = b, a+b
+#
+# fbnq(100)  # 1 1 2 3 5 8 13 21 34 55 89
+
+
+
+# # 案例(3)
+# 使用递归，实现整数的因式分解
+# 在每次递归中，找到num最小的因数做商，对商进行递归，返回一个因数列表
+#
+# def f(num: int):
+#     num_list = []
+#     for i in range(2, int(num)):
+#         if num % i == 0:
+#             num_list.append(int(i))
+#             return num_list + f(num//i)  # 若能遍历到因数+递归的下一级列表
+#     num_list.append(int(num))
+#     return num_list  # 若无因数，返回存放自身的列表
+#
+# n = int(input('请输入一个整数：'))
+# n_list= f(n)
+# print(n_list)
+
+
+
+
 
 
 

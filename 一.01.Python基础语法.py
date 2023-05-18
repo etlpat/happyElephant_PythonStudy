@@ -138,6 +138,44 @@ print("Python")#字符串
 
 
 
+# # bool类型知识补充
+# bool类型，即True和False
+
+# # 其他类型转化为bool值，具有一定规则
+#
+# # ①【对于数字来说】：bool(0)是False，非0都是True
+# print(bool(1))  # True
+# print(bool(-1))  # True
+# print(bool(0))  # False
+#
+# # ②【数据容器】：空容器为False，非空为True
+# # 列表
+# print(bool([1]))  # True
+# print(bool([]))  # False
+# # 元组
+# print(bool((1,)))  # True
+# print(bool(()))  # False
+# # 字符串
+# print(bool('123'))  # True
+# print(bool(' '))  # True
+# print(bool(''))  # False
+# # 集合、字典
+# print(bool({1, 2}))  # True
+# print(bool({1: 1}))  # True
+# print(bool({}))  # False
+#
+# # ③【可迭代对象】，正确的可迭代对象是True，无法生成的是False
+# print(bool(range(5)))  # True
+# print(bool(range(-5)))  # False
+# print(bool(range(4, 1)))  # False
+#
+# # ④【函数和生成器对象】，为True
+# print(bool(sum))  # True
+# print(bool((x for x in range(10))))  # True
+
+
+
+
 
 
 

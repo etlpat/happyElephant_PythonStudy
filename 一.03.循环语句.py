@@ -7,12 +7,10 @@
 5.for循环的基础语法
 6.for循环的嵌套调用
 7.循环终端：break和continue
-8.综合案例
+8.循环语句的else语句
+9.综合案例
 """
-
-
-
-
+import time
 
 # 1.while循环的基础语法
 
@@ -296,8 +294,40 @@
 
 
 
-# 8.综合案例
+# 8.循环语句的else语句
 
+# 在python中，循环结构可以带else子语句。
+# 带else语句的循环执行过程为：【如果循环因(条件表达式不成立)或(序列自然遍历结束)而结束时，则执行else语句；如果循环(因执行了break语句而导致循环提前结束)，则不会执行else语句】
+
+# # while-else语法：
+#
+# while 条件表达式:
+#    循环体
+#    ...
+# else:
+#    代码快
+
+
+# # for-else语法：
+#
+# for 循环变量 in 可迭代对象:
+#    循环体
+#    ...
+# else:
+#    代码块
+
+
+
+
+
+
+
+
+
+
+# 9.综合案例
+
+# # 案例(1)
 # 某1公司，账户余额有10000元，给20名员工发工资
 # 员工编号1到20，从编号1开始，一次领取工作，每人1000元
 # 领工资时，判断绩效分（1到10随机生成），低于5，不发工资
@@ -316,3 +346,51 @@
 #         money -= 1000
 #     else:
 #         print(f"员工{i}绩效分{count},满足，工资账户余额{money},下月补发")
+
+
+# # 案例(2)
+#
+# 打印九九乘法表
+# for x in range(1,10):
+#     for y in range(1, x + 1):
+#         print(f'{y}*{x}={x*y}', end='\t')
+#     print()
+
+
+# # 案例(3)
+# 判断今天是今年的第几天
+# 补充：time.localtime()，返回一个可迭代对象，前三个元素是int形式的年\月\日
+#
+# data = list(time.localtime())[:3]
+# month_day = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+# if data[0]%400==0 or (data[0]%4==0 and data[0]%100!=0):
+#     month_day[1] = 29
+#
+# if data[1] == 1:
+#     year_day = data[2]
+# else:
+#     year_day = sum(month_day[:data[1]-1]) + data[2]  # 日期 = 前几个月的天数之和 + 本月已过的天数
+# print(year_day)
+
+
+# # 案例(4)
+# 用*输出一个菱形，输入一个数字决定菱形中间行的*的个数
+# 菱形如下：
+#   *
+#  * *
+# * * *
+#  * *
+#   *
+#
+# n = int(input('请输入菱形中间行*的个数：'))
+# for i in range(1, n+1):
+#     print(' ' * (n-i), end='')
+#     for j in range(i):
+#         print('*', end=' ')
+#     print()
+# for i in range(n-1, 0, -1):
+#     print(' ' * (n-i), end='')
+#     for j in range(i):
+#         print('*', end=' ')
+#     print()
+
