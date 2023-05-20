@@ -9,7 +9,8 @@
 6.函数的嵌套调用
 7.变量的作用域
     global关键字
-8.综合案例
+8.包含yield的生成器函数
+9.综合案例
 """
 
 
@@ -281,8 +282,36 @@
 
 
 
-## 8.综合案例
+## 8.包含yield的生成器函数
 
+# 包含yield语句的函数可以用来创建生成器对象，这样的函数称作生成器函数。
+#
+# yield语句与return语句的作用相似，都是用来从函数中返回值。return语句一旦执行会立刻结束函数的运行。
+# yield语句与return不同的是：每次执行到yield语句并返回一个值之后会暂停或挂起后面代码的执行，下次通过next()函数、__next__()方法、for循环遍历生成器对象元素或其他方式“索要”数据时，恢复执行。
+#
+# 生成器对象具有惰性求值的特点，占用内存少，适合大数据处理。
+
+
+# # 实际案例：
+# # (1)编写能够生成斐波那契数列的生成器函数
+# def f():
+#     a, b = 1, 1
+#     while True:
+#         yield a
+#         a, b = b, a+b
+#
+# obj_1 = f()
+# for i in range(10):
+#     print(next(obj_1), end=' ')  # 1 1 2 3 5 8 13 21 34 55
+
+
+
+
+
+
+
+
+## 9.综合案例
 
 
 # # 案例(1)
@@ -299,7 +328,6 @@
 # 查询余额、存款、取款后都会返回主菜单
 # 存款、取款后，都应显示一些当前余额
 # 客户只有选择退出或输入错误，程序会退掉，否则程序会一直运行
-
 
 
 # # 定义全局变量
@@ -390,7 +418,73 @@
 
 
 
+# # 案例(3)
+# # 编写函数，接收字符串，返回元组(大字母个数, 小写字母个数, 数字个数)
+#
+# import re
+# s = input('请输入字符串:')  # 这里输入QWas12ERdf34TYg
+# r_big = r'[A-Z]'
+# r_small = r'[a-z]'
+# r_num = r'\d'
+# result1 = re.findall(r_big, s)
+# result2 = re.findall(r_small, s)
+# result3 = re.findall(r_num, s)
+# # print(result1, result2, result3)  # ['Q', 'W', 'E', 'R', 'T', 'Y'] ['a', 's', 'd', 'f', 'g'] ['1', '2', '3', '4']
+# t = (len(result1), len(result2), len(result3))
+# print(t)  # (6, 5, 4)
 
 
 
+# # 案例(4)
+# # 编写一个函数，传入数字t，打印输出杨辉三角的前t行
+#
+# def yanghui(t):
+#     print([1])
+#     if t > 1:
+#         line = [1, 1]
+#         print(line)
+#         for i in range(t-2):
+#             mid_list = [line[j] + line[j+1] for j in range(len(line) - 1)]  # 杨辉三角每行中处理首尾的1的列表
+#             line = [1] + mid_list + [1]
+#             print(line)
+#
+# yanghui(5)
+# # [1]
+# # [1, 1]
+# # [1, 2, 1]
+# # [1, 3, 3, 1]
+# # [1, 4, 6, 4, 1]
 
+
+
+# # 案例(5)
+# # 编写函数，接收一个正偶数，输出两个素数，且这两个素数和等于之前的正偶数。如果存在多组符合条件的素数，则全部输出
+#
+# def f(n):
+#     def get_prime_list(n):  # py允许嵌套定义函数，这个是返回小于n的素数列表的函数
+#         prime_list = []
+#         for x in range(2, n):
+#             flag = 1
+#             for y in range(2, x):
+#                 if x % y == 0:
+#                     flag = 0
+#                     break
+#             if flag:
+#                 prime_list.append(x)
+#         return prime_list
+#
+#     prime_list = get_prime_list(n)
+#     if len(prime_list) >= 2:
+#         result = []
+#         for x in range(1, len(prime_list)):
+#             for y in range(x):
+#                 if n == prime_list[x] + prime_list[y]:
+#                     result.append((prime_list[y], prime_list[x]))
+#         return result
+#     else:
+#         print('不存在')
+#         return None
+#
+# n = int(input('请输入一个正偶数：'))
+# result = f(n)
+# print(result)
